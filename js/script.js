@@ -1,26 +1,18 @@
-/* =====================================================
-   QUARTO 8
-   A COLHEITA DE FOGO E SANGUE
-   AJ WEB STUDIO
-===================================================== */
 
-/* =====================================================
-   CONFIGURAÇÕES
-===================================================== */
 
 const CONFIG = {
+  
   totalPerguntas: 8,
-
-  siteUrl: "https://colheitadefogoesanguequiz.vercel.app",
+  siteUrl: "https://quizcolheitadefogoesangue.vercel.app/",
 
   whatsappUrl: "https://wa.me/?text=",
-
   tempoRevelacao: 2800,
+  velocidadeDigitacao: 32,
 };
 
-/* =====================================================
+/* ==
    PERSONAGENS
-===================================================== */
+=== */
 
 const personagens = {
   calliandra: {
@@ -81,7 +73,6 @@ const personagens = {
 ===================================================== */
 
 const perguntas = [
-
   {
     pergunta: "Qual é a sua cor favorita de vestido?",
 
@@ -113,7 +104,8 @@ const perguntas = [
   },
 
   {
-    pergunta: "O mundo está acabando, e existe uma única possibilidade de vencer no final. Qual é a sua reação? ",
+    pergunta:
+      "O mundo está acabando, e existe uma única possibilidade de vencer no final. Qual é a sua reação?",
 
     respostas: [
       {
@@ -147,31 +139,31 @@ const perguntas = [
       "Quando os tempos ficam difíceis, qual dessas frases mais combina com você?",
 
     respostas: [
-
       {
-        texto:
-          "Eu vou lutar até o meu último sopro de vida.",
+        texto: "Eu vou lutar até o meu último sopro de vida.",
+
         personagem: "calliandra",
       },
 
       {
-        texto:
-          "Eu tenho fé de que, no final, tudo vai dar certo.",
+        texto: "Eu tenho fé de que, no final, tudo vai dar certo.",
+
         personagem: "narela",
       },
 
       {
         texto:
           "Eu sei que posso encontrar uma solução, mas confesso que o medo aparece quando tudo fica difícil.",
+
         personagem: "aster",
       },
 
       {
         texto:
           "Eu só consigo acreditar que vai dar certo quando finalmente vejo tudo se encaminhando.",
+
         personagem: "lenora",
       },
-
     ],
   },
 
@@ -326,6 +318,15 @@ const perguntas = [
   },
 ];
 
+/*
+  Garante que o número configurado
+  corresponda ao número real de perguntas.
+
+  Assim, quando Sara e Any adicionarem
+  ou removerem perguntas, o quiz acompanha.
+*/
+
+CONFIG.totalPerguntas = perguntas.length;
 
 /* =====================================================
    ESTADO DO QUIZ
@@ -349,13 +350,9 @@ let respostaSelecionada = false;
 
 let transicaoEmAndamento = false;
 
-/*
-  Controlador da máquina de escrever.
-
-  Esse valor impede que uma animação
-  antiga continue escrevendo enquanto
-  uma nova pergunta já foi carregada.
-*/
+/* =====================================================
+   ESTADO DA MÁQUINA DE ESCREVER
+===================================================== */
 
 let digitacaoTimer = null;
 
@@ -416,10 +413,6 @@ function mostrarTela(tela) {
 ===================================================== */
 
 function cancelarDigitacao() {
-  /*
-    Cancela o timer atual.
-  */
-
   if (digitacaoTimer !== null) {
     clearTimeout(digitacaoTimer);
 
@@ -427,8 +420,7 @@ function cancelarDigitacao() {
   }
 
   /*
-    Invalida qualquer execução
-    anterior da animação.
+    Invalida a animação anterior.
   */
 
   digitacaoId++;
@@ -439,11 +431,6 @@ function cancelarDigitacao() {
 ===================================================== */
 
 function startQuiz() {
-  /*
-    Garante que nenhuma animação
-    antiga ficou ativa.
-  */
-
   cancelarDigitacao();
 
   perguntaAtual = 0;
@@ -464,11 +451,19 @@ function startQuiz() {
 
   transicaoEmAndamento = false;
 
-  revealLoading.classList.remove("active");
+  if (revealLoading) {
+    revealLoading.classList.remove("active");
 
-  revealLoading.setAttribute("aria-hidden", "true");
+    revealLoading.setAttribute("aria-hidden", "true");
+  }
 
   mostrarTela(quiz);
+
+  window.scrollTo({
+    top: 0,
+
+    behavior: "smooth",
+  });
 
   carregarPergunta();
 }
@@ -478,42 +473,18 @@ function startQuiz() {
 ===================================================== */
 
 function escreverPergunta(texto) {
-  /*
-    Cancela qualquer pergunta
-    que ainda esteja sendo digitada.
-  */
-
   cancelarDigitacao();
 
-  /*
-    Cria uma identificação exclusiva
-    para esta animação.
-  */
-
   const idAtual = digitacaoId;
-
-  /*
-    Limpa completamente o título
-    antes de começar.
-  */
 
   questionText.textContent = "";
 
   let indice = 0;
 
-  /*
-    Velocidade da máquina de escrever.
-
-    Quanto menor o número,
-    mais rápida fica a animação.
-  */
-
-  const velocidade = 32;
-
   function escrever() {
     /*
-      Se uma nova animação começou,
-      esta foi cancelada.
+      Cancela se uma nova pergunta
+      já começou.
     */
 
     if (idAtual !== digitacaoId) {
@@ -521,8 +492,7 @@ function escreverPergunta(texto) {
     }
 
     /*
-      Ainda existem caracteres
-      para escrever.
+      Ainda existem caracteres.
     */
 
     if (indice < texto.length) {
@@ -530,14 +500,14 @@ function escreverPergunta(texto) {
 
       indice++;
 
-      digitacaoTimer = setTimeout(escrever, velocidade);
+      digitacaoTimer = setTimeout(
+        escrever,
+
+        CONFIG.velocidadeDigitacao,
+      );
 
       return;
     }
-
-    /*
-      Terminou a pergunta.
-    */
 
     digitacaoTimer = null;
   }
@@ -556,42 +526,39 @@ function carregarPergunta() {
 
   const pergunta = perguntas[perguntaAtual];
 
+  if (!pergunta) {
+    return;
+  }
+
   /*
     Atualiza contador.
   */
 
-  questionNumber.textContent = `Pergunta ${perguntaAtual + 1} de ${
-    CONFIG.totalPerguntas
-  }`;
+  questionNumber.textContent = `Pergunta ${perguntaAtual + 1} de ${CONFIG.totalPerguntas}`;
 
   /*
-    Atualiza barra de progresso.
+    Atualiza progresso.
   */
 
-  progressFill.style.width = `${
-    ((perguntaAtual + 1) / CONFIG.totalPerguntas) * 100
-  }%`;
+  progressFill.style.width = `${((perguntaAtual + 1) / CONFIG.totalPerguntas) * 100}%`;
 
   /*
-    Remove respostas antigas.
+    Limpa respostas anteriores.
   */
 
   answers.innerHTML = "";
 
   /*
-    Inicia a máquina de escrever
-    SOMENTE para a pergunta atual.
+    Máquina de escrever.
   */
 
   escreverPergunta(pergunta.pergunta);
 
   /*
-    Cria as respostas.
+    Cria novas respostas.
   */
 
-  pergunta.respostas.forEach((resposta) => {
-    criarResposta(resposta);
-  });
+  pergunta.respostas.forEach(criarResposta);
 }
 
 /* =====================================================
@@ -606,6 +573,8 @@ function criarResposta(resposta) {
   button.className = "answer";
 
   button.textContent = resposta.texto;
+
+  button.setAttribute("aria-label", resposta.texto);
 
   button.addEventListener("click", () => {
     selecionarResposta(button, resposta.personagem);
@@ -630,14 +599,13 @@ function selecionarResposta(botao, personagem) {
   respostaSelecionada = true;
 
   /*
-    Destaca a resposta escolhida.
+    Destaca a resposta.
   */
 
   botao.classList.add("selected");
 
   /*
-    Desativa todas as respostas
-    enquanto ocorre a transição.
+    Desativa todas as respostas.
   */
 
   document.querySelectorAll(".answer").forEach((answer) => {
@@ -648,11 +616,13 @@ function selecionarResposta(botao, personagem) {
     Soma o ponto.
   */
 
-  pontuacao[personagem]++;
+  if (Object.prototype.hasOwnProperty.call(pontuacao, personagem)) {
+    pontuacao[personagem]++;
+  }
 
   /*
-    Pequeno intervalo para o
-    usuário perceber a seleção.
+    Pequeno intervalo
+    para visualizar a seleção.
   */
 
   setTimeout(() => {
@@ -665,15 +635,6 @@ function selecionarResposta(botao, personagem) {
 ===================================================== */
 
 function proximaEtapa() {
-  /*
-    Cancela imediatamente a
-    máquina de escrever anterior.
-
-    Isso é importante porque a pessoa
-    pode ter clicado antes do título
-    terminar de aparecer.
-  */
-
   cancelarDigitacao();
 
   perguntaAtual++;
@@ -689,7 +650,7 @@ function proximaEtapa() {
   }
 
   /*
-    Acabaram as perguntas.
+    Terminou o quiz.
   */
 
   iniciarRevelacao();
@@ -706,10 +667,9 @@ function trocarPergunta() {
 
   setTimeout(() => {
     /*
-        Segurança extra:
-        se a tela mudou nesse intervalo,
-        não continua a animação.
-      */
+      Se a tela mudou,
+      interrompe.
+    */
 
     if (!quiz.classList.contains("active")) {
       return;
@@ -722,11 +682,13 @@ function trocarPergunta() {
 }
 
 /* =====================================================
-   DESCOBRIR VENCEDORA
+   DESCOBRIR RESULTADO
 ===================================================== */
 
 function descobrirResultado() {
-  return Object.keys(pontuacao).reduce((anterior, atual) => {
+  const personagensComMaiorPontuacao = Object.keys(pontuacao);
+
+  return personagensComMaiorPontuacao.reduce((anterior, atual) => {
     if (pontuacao[atual] > pontuacao[anterior]) {
       return atual;
     }
@@ -746,37 +708,41 @@ function iniciarRevelacao() {
 
   transicaoEmAndamento = true;
 
-  /*
-    Cancela qualquer digitação
-    que ainda esteja acontecendo.
-  */
-
   cancelarDigitacao();
 
   /*
     Descobre a personagem.
   */
 
-  personagemEscolhida = personagens[descobrirResultado()];
+  const resultado = descobrirResultado();
+
+  personagemEscolhida = personagens[resultado];
 
   /*
-    Remove a tela do quiz.
+    Remove quiz.
   */
 
   quiz.classList.remove("active");
 
   /*
-    Ativa a tela de loading
-    com a cauda do dragão.
+    Ativa loading.
   */
 
-  revealLoading.classList.add("active");
+  if (revealLoading) {
+    revealLoading.classList.add("active");
 
-  revealLoading.setAttribute("aria-hidden", "false");
+    revealLoading.setAttribute("aria-hidden", "false");
+  }
 
   /*
-    Aguarda o tempo da revelação
-    antes de mostrar o resultado.
+    Bloqueia scroll.
+  */
+
+  atualizarScrollRevelacao(true);
+
+  /*
+    Aguarda a animação
+    do dragão.
   */
 
   setTimeout(() => {
@@ -789,12 +755,24 @@ function iniciarRevelacao() {
 ===================================================== */
 
 function mostrarResultado() {
-  revealLoading.classList.remove("active");
-
-  revealLoading.setAttribute("aria-hidden", "true");
+  if (!personagemEscolhida) {
+    return;
+  }
 
   /*
-    Símbolo da personagem.
+    Fecha loading.
+  */
+
+  if (revealLoading) {
+    revealLoading.classList.remove("active");
+
+    revealLoading.setAttribute("aria-hidden", "true");
+  }
+
+  atualizarScrollRevelacao(false);
+
+  /*
+    Símbolo.
   */
 
   resultSymbol.textContent = personagemEscolhida.simbolo;
@@ -826,19 +804,24 @@ function mostrarResultado() {
   resultDescription.textContent = personagemEscolhida.descricao;
 
   /*
-    Prepara o card vertical
-    para Instagram Stories.
+    Prepara Story.
   */
 
   prepararStoryCard();
 
   /*
-    Mostra o resultado.
+    Mostra resultado.
   */
 
   mostrarTela(result);
 
   transicaoEmAndamento = false;
+
+  window.scrollTo({
+    top: 0,
+
+    behavior: "smooth",
+  });
 }
 
 /* =====================================================
@@ -860,6 +843,53 @@ function prepararStoryCard() {
 }
 
 /* =====================================================
+   GERAR CANVAS DO RESULTADO
+===================================================== */
+
+async function gerarImagemResultado() {
+  if (!personagemEscolhida) {
+    return null;
+  }
+
+  prepararStoryCard();
+
+  const card = document.getElementById("story-card");
+
+  if (!card) {
+    throw new Error("Story card não encontrado.");
+  }
+
+  /*
+    Garante que a imagem da personagem
+    esteja carregada antes do canvas.
+  */
+
+  if (storyImage && !storyImage.complete) {
+    await new Promise((resolve) => {
+      storyImage.onload = resolve;
+
+      storyImage.onerror = resolve;
+    });
+  }
+
+  const canvas = await html2canvas(card, {
+    width: 1080,
+
+    height: 1920,
+
+    scale: 1,
+
+    useCORS: true,
+
+    allowTaint: false,
+
+    backgroundColor: "#090606",
+  });
+
+  return canvas;
+}
+
+/* =====================================================
    SALVAR RESULTADO
 ===================================================== */
 
@@ -868,31 +898,12 @@ async function saveResult() {
     return;
   }
 
-  prepararStoryCard();
-
-  const card = document.getElementById("story-card");
-
   try {
-    /*
-      Gera exatamente no tamanho
-      de um Instagram Story.
-    */
+    const canvas = await gerarImagemResultado();
 
-    const canvas = await html2canvas(card, {
-      width: 1080,
-
-      height: 1920,
-
-      scale: 1,
-
-      useCORS: true,
-
-      backgroundColor: "#090606",
-    });
-
-    /*
-      Cria o arquivo.
-    */
+    if (!canvas) {
+      throw new Error("Canvas não foi gerado.");
+    }
 
     const link = document.createElement("a");
 
@@ -909,7 +920,26 @@ async function saveResult() {
 }
 
 /* =====================================================
+   TEXTO DE COMPARTILHAMENTO
+===================================================== */
+
+function criarMensagemCompartilhamento() {
+  if (!personagemEscolhida) {
+    return "";
+  }
+
+  return `Eu tirei a ${personagemEscolhida.nome}! 🔥
+
+E qual garota do Quarto 8 você seria?
+
+Descubra no quiz de A Colheita de Fogo e Sangue 🌾
+
+${CONFIG.siteUrl}`;
+}
+
+/* =====================================================
    COMPARTILHAMENTO
+   IMAGEM + TEXTO + LINK
 ===================================================== */
 
 async function shareResult() {
@@ -917,29 +947,82 @@ async function shareResult() {
     return;
   }
 
+  const texto = criarMensagemCompartilhamento();
+
   /*
-    Texto utilizado no compartilhamento.
+    ==================================================
+    TENTA GERAR A IMAGEM PRIMEIRO
+    ==================================================
   */
 
-  const texto = `Eu descobri que sou ${personagemEscolhida.nome} 🌾🔥
+  let arquivoImagem = null;
 
-A Providência revelou meu caminho no Quarto 8.
+  try {
+    const canvas = await gerarImagemResultado();
 
-Qual garota do Quarto 8 você é?
+    if (canvas) {
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, "image/png");
+      });
 
-${CONFIG.siteUrl}`;
+      if (blob) {
+        arquivoImagem = new File(
+          [blob],
+
+          `quarto-8-${personagemEscolhida.nome.toLowerCase()}.png`,
+
+          {
+            type: "image/png",
+          },
+        );
+      }
+    }
+  } catch (error) {
+    console.warn(
+      "Não foi possível preparar a imagem para compartilhamento.",
+      error,
+    );
+  }
 
   /*
-    Compartilhamento nativo.
-
-    Em celulares compatíveis,
-    abre o menu nativo do aparelho.
+    ==================================================
+    COMPARTILHAMENTO NATIVO
+    ==================================================
   */
 
   if (navigator.share) {
     try {
+      /*
+        Primeiro tenta compartilhar
+        IMAGEM + TEXTO + LINK.
+      */
+
+      if (
+        arquivoImagem &&
+        navigator.canShare &&
+        navigator.canShare({
+          files: [arquivoImagem],
+        })
+      ) {
+        await navigator.share({
+          title: `Eu tirei a ${personagemEscolhida.nome}!`,
+
+          text: texto,
+
+          files: [arquivoImagem],
+        });
+
+        return;
+      }
+
+      /*
+        Caso o navegador não permita
+        arquivos, compartilha pelo menos
+        texto + link.
+      */
+
       await navigator.share({
-        title: "Qual garota do Quarto 8 você é?",
+        title: `Eu tirei a ${personagemEscolhida.nome}!`,
 
         text: texto,
 
@@ -949,23 +1032,32 @@ ${CONFIG.siteUrl}`;
       return;
     } catch (error) {
       /*
-        Se a pessoa fechou o menu
-        de compartilhamento,
-        não fazemos nada.
+        Se a pessoa simplesmente fechou
+        o menu de compartilhamento,
+        não abrimos o WhatsApp.
       */
 
-      if (error.name === "AbortError") {
+      if (error && error.name === "AbortError") {
         return;
       }
+
+      console.warn("Compartilhamento nativo indisponível:", error);
     }
   }
 
   /*
-    Fallback para WhatsApp.
+    ==================================================
+    FALLBACK PARA WHATSAPP
+    ==================================================
 
-    Caso o navegador não tenha
-    navigator.share(), abrimos
-    automaticamente o WhatsApp.
+    Se o navegador não suporta
+    navigator.share(), o WhatsApp
+    é aberto automaticamente.
+
+    Como o WhatsApp não aceita
+    uma imagem local gerada pelo
+    navegador através de wa.me,
+    enviamos a mensagem + link.
   */
 
   const whatsappUrl = CONFIG.whatsappUrl + encodeURIComponent(texto);
@@ -974,15 +1066,31 @@ ${CONFIG.siteUrl}`;
 }
 
 /* =====================================================
+   COPIAR RESULTADO
+   FALLBACK EXTRA
+===================================================== */
+
+async function copiarResultado() {
+  if (!personagemEscolhida) {
+    return;
+  }
+
+  const texto = criarMensagemCompartilhamento();
+
+  try {
+    await navigator.clipboard.writeText(texto);
+
+    alert("Resultado copiado! Agora é só colar onde quiser. 🌾🔥");
+  } catch (error) {
+    console.error("Erro ao copiar:", error);
+  }
+}
+
+/* =====================================================
    RECOMEÇAR
 ===================================================== */
 
 function restartQuiz() {
-  /*
-    Cancela qualquer máquina de
-    escrever que ainda esteja ativa.
-  */
-
   cancelarDigitacao();
 
   perguntaAtual = 0;
@@ -1004,15 +1112,19 @@ function restartQuiz() {
   transicaoEmAndamento = false;
 
   /*
-    Fecha o loading.
+    Fecha loading.
   */
 
-  revealLoading.classList.remove("active");
+  if (revealLoading) {
+    revealLoading.classList.remove("active");
 
-  revealLoading.setAttribute("aria-hidden", "true");
+    revealLoading.setAttribute("aria-hidden", "true");
+  }
+
+  atualizarScrollRevelacao(false);
 
   /*
-    Volta para a home.
+    Volta para home.
   */
 
   mostrarTela(home);
@@ -1040,20 +1152,31 @@ function atualizarScrollRevelacao(ativo) {
    OBSERVAR REVELAÇÃO
 ===================================================== */
 
-const revealObserver = new MutationObserver(() => {
-  atualizarScrollRevelacao(revealLoading.classList.contains("active"));
-});
+if (revealLoading) {
+  const revealObserver = new MutationObserver(() => {
+    atualizarScrollRevelacao(revealLoading.classList.contains("active"));
+  });
 
-revealObserver.observe(revealLoading, {
-  attributes: true,
+  revealObserver.observe(revealLoading, {
+    attributes: true,
 
-  attributeFilter: ["class"],
-});
+    attributeFilter: ["class"],
+  });
+}
 
 /* =====================================================
    INICIALIZAÇÃO
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+  /*
+      Garante que o número
+      sempre acompanhe as perguntas.
+    */
+
+  CONFIG.totalPerguntas = perguntas.length;
+
   mostrarTela(home);
+
+  atualizarScrollRevelacao(false);
 });
