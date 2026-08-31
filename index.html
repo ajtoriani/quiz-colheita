@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Qual garota do Quarto 8 você é?</title>
+
+    <meta
+      name="description"
+      content="Descubra qual garota do Quarto 8 representa sua essência no universo de A Colheita de Fogo e Sangue." />
+
+    <meta name="theme-color" content="#120909" />
+
+    <!-- ==================================================
+         FAVICON
+    ================================================== -->
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>" />
+
+    <!-- ==================================================
+         OPEN GRAPH
+    ================================================== -->
+
+    <meta property="og:title" content="Qual garota do Quarto 8 você é?" />
+
+    <meta
+      property="og:description"
+      content="A Providência revelou seu caminho. Descubra qual personagem vive dentro de você." />
+
+    <meta property="og:type" content="website" />
+
+    <meta
+      property="og:url"
+      content="https://colheitadefogoesanguequiz.vercel.app" />
+
+    <meta property="og:image" content="assets/background-desktop.webp" />
+
+    <!-- ==================================================
+         FONTES
+    ================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+
+    <!-- ==================================================
+         CSS
+    ================================================== -->
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- ==================================================
+         CAMADA DE BRASAS
+    ================================================== -->
+
+    <div class="embers" aria-hidden="true">
+      <span class="ember ember-1"></span>
+      <span class="ember ember-2"></span>
+      <span class="ember ember-3"></span>
+      <span class="ember ember-4"></span>
+      <span class="ember ember-5"></span>
+      <span class="ember ember-6"></span>
+      <span class="ember ember-7"></span>
+      <span class="ember ember-8"></span>
+      <span class="ember ember-9"></span>
+      <span class="ember ember-10"></span>
+      <span class="ember ember-11"></span>
+      <span class="ember ember-12"></span>
+    </div>
+
+    <!-- ==================================================
+         HOME
+    ================================================== -->
+
+    <section id="home" class="screen active">
+      <div class="hero">
+        <!-- BACKGROUND RESPONSIVO -->
+
+        <picture class="hero-background">
+          <source
+            media="(max-width: 768px)"
+            srcset="assets/background-mobile.webp" />
+
+          <img
+            src="assets/background-desktop.webp"
+            alt="Universo visual de A Colheita de Fogo e Sangue"
+            fetchpriority="high" />
+        </picture>
+
+        <!-- OVERLAY CINEMATOGRÁFICO -->
+
+        <div class="hero-overlay" aria-hidden="true"></div>
+
+        <!-- CONTEÚDO -->
+
+        <div class="hero-content">
+          <p class="small-title">A COLHEITA DE FOGO E SANGUE</p>
+
+          <h1>
+            Qual garota do<br />
+            Quarto 8<br />
+            você é?
+          </h1>
+
+          <p class="description">
+            Descubra qual personagem combina com sua personalidade, sua coragem
+            e sua forma de enfrentar os desafios.
+          </p>
+
+          <button type="button" class="primary-btn" onclick="startQuiz()">
+            <span> Começar teste </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         QUIZ
+    ================================================== -->
+
+    <section id="quiz" class="screen">
+      <div class="quiz-container">
+        <!-- PROGRESSO -->
+
+        <div class="progress">
+          <span id="question-number"> Pergunta 1 de 10 </span>
+
+          <div class="progress-bar" aria-hidden="true">
+            <div id="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- PERGUNTA -->
+
+        <div class="question-card" id="question-card">
+          <h2 id="question-text" aria-live="polite">Pergunta aparecerá aqui</h2>
+
+          <div id="answers" class="answers"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         LOADING / REVELAÇÃO
+    ================================================== -->
+
+    <section id="reveal-loading" class="reveal-loading" aria-hidden="true">
+      <div class="reveal-content">
+        <div class="dragon-ring" aria-hidden="true">
+          <img src="assets/dragon-ring.png" alt="" />
+        </div>
+
+        <p class="reveal-text">A Providência está revelando seu caminho...</p>
+
+        <div class="reveal-sparks" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         RESULTADO
+    ================================================== -->
+
+    <section id="result" class="screen">
+
+    <div class="result-card" id="result-card">
+
+        <p class="small-title">
+            A PROVIDÊNCIA REVELOU...
+        </p>
+
+        <div id="result-symbol" class="result-symbol">
+            🔥
+        </div>
+
+        <img
+            id="result-image"
+            class="character-image"
+            src=""
+            alt="Personagem revelada"
+        >
+
+        <h1 id="result-name">
+            Nome
+        </h1>
+
+        <h3 id="result-phrase">
+            Frase
+        </h3>
+
+        <p id="result-description">
+            Descrição
+        </p>
+
+        <div class="result-buttons">
+
+            <button
+                class="primary-btn"
+                onclick="saveResult()">
+                Salvar resultado
+            </button>
+
+            <button
+                class="secondary-btn"
+                onclick="shareResult()">
+                Compartilhar
+            </button>
+
+            <button
+                class="secondary-btn"
+                onclick="restartQuiz()">
+                Fazer novamente
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ASSINATURA -->
+
+    <footer class="creator-footer">
+
+        <p>
+            Uma experiência criada por
+        </p>
+
+        <a
+            href="https://ajwebstudio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer">
+            AJ Web Studio
+        </a>
+
+    </footer>
+
+</section>
+
+
+    <!-- ==================================================
+         STORY CARD
+         1080 x 1920
+    ================================================== -->
+
+    <div id="story-card" aria-hidden="true">
+      <div class="story-background">
+        <img id="story-image" src="" alt="" />
+
+        <div class="story-overlay"></div>
+
+        <div class="story-embers"></div>
+
+        <div class="story-content">
+          <p class="story-eyebrow">A PROVIDÊNCIA REVELOU...</p>
+
+          <h2 id="story-name">CALLIANDRA</h2>
+
+          <p id="story-description">Sua essência foi revelada.</p>
+
+          <span> QUARTO 8 </span>
+
+          <div class="story-footer">A COLHEITA DE FOGO E SANGUE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         VLibras
+    ================================================== -->
+
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
+    <script>
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
+    </script>
+
+    <!-- ==================================================
+         HTML2CANVAS
+    ================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
