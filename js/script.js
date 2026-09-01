@@ -932,7 +932,7 @@ function criarMensagemCompartilhamento() {
 
 E qual garota do Quarto 8 você seria?
 
-Descubra no quiz de A Colheita de Fogo e Sangue 🌾
+Descubra no quiz de Colheita de Fogo e Sangue 🌾
 
 ${CONFIG.siteUrl}`;
 }
